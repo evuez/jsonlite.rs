@@ -1,0 +1,9 @@
+[package]
+name = "jsonlite"
+version = "0.1.0"
+authors = ["d139maisonneuvej"]
+
+[dependencies]
+uuid = "0.1.0"
+docopt = "*"
+rustc-serialize = "*"
