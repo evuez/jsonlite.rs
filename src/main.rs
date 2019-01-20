@@ -1,15 +1,16 @@
-extern crate uuid;
 extern crate docopt;
 extern crate rustc_serialize;
+extern crate uuid;
+#[macro_use]
+extern crate serde_derive;
 
-use std::convert::AsRef;
-use std::fs::{File, remove_file, remove_dir_all, create_dir};
-use std::io::prelude::*;
-use std::io::{stdin, stdout};
 use docopt::Docopt;
 use rustc_serialize::json::Json;
+use std::convert::AsRef;
+use std::fs::{create_dir, remove_dir_all, remove_file, File};
+use std::io::prelude::*;
+use std::io::{stdin, stdout};
 use uuid::Uuid;
-
 
 const VERSION: &'static str = "0.1.0";
 const USAGE: &'static str = "
@@ -17,30 +18,27 @@ Usage: jsonlite <cmd> <data>
        jsonlite <cmd>
 ";
 
-
-#[derive(RustcDecodable)]
+#[derive(RustcDecodable, Deserialize)]
 struct Args {
     arg_cmd: String,
     arg_data: String,
 }
 
-
 fn main() {
     let args: Args = Docopt::new(USAGE)
-                        .and_then(|d| d.decode())
-                        .unwrap_or_else(|e| e.exit());
+        .and_then(|d| d.deserialize())
+        .unwrap_or_else(|e| e.exit());
 
     match args.arg_cmd.as_ref() {
-        "set"     => set(&args.arg_data),
-        "get"     => get(&args.arg_data),
-        "delete"  => delete(&args.arg_data),
-        "drop"    => drop(),
+        "set" => set(&args.arg_data),
+        "get" => get(&args.arg_data),
+        "delete" => delete(&args.arg_data),
+        "drop" => drop(),
         "version" => println!("{}", VERSION),
-        "help"    => println!("{}", USAGE),
-        _         => println!("Unknown"),
+        "help" => println!("{}", USAGE),
+        _ => println!("Unknown"),
     }
 }
-
 
 fn set(json: &str) {
     let uuid = Uuid::new_v4().to_hyphenated_string().to_uppercase();
@@ -51,7 +49,8 @@ fn set(json: &str) {
     let mut file = File::create(&path).unwrap();
     let json = Json::from_str(json).unwrap();
 
-    file.write_all(json.pretty().to_string().as_bytes()).unwrap();
+    file.write_all(json.pretty().to_string().as_bytes())
+        .unwrap();
 
     println!("{}", uuid);
 }
@@ -70,7 +69,7 @@ fn delete(uuid: &str) {
     let path = format!("jsonlite.data/{}", uuid);
 
     match remove_file(path) {
-        Ok(_)  => (),
+        Ok(_) => (),
         Err(e) => panic!("Error deleting {}: {}", uuid, e),
     }
 }
