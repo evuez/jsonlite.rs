@@ -8,7 +8,7 @@ JSONlite sandboxes the current working directory just like [SQLite](https://www.
 
 ## Note
 
-This is my first Rust code so it's far from being good code. I'll accept most PR as long as it doesn't break API compatibility :).
+This is my first Rust code so it's far from being good code. I'll accept most PRs as long as they don't break API compatibility :).
 
 ## Installation
 
