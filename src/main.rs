@@ -12,8 +12,8 @@ use std::io::prelude::*;
 use std::io::{stdin, stdout};
 use uuid::Uuid;
 
-const VERSION: &'static str = "0.1.0";
-const USAGE: &'static str = "
+const VERSION: &str = "0.1.0";
+const USAGE: &str = "
 Usage: jsonlite <cmd> <data>
        jsonlite <cmd>
 ";
